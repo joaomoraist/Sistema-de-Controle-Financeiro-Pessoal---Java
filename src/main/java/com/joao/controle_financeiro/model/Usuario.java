@@ -2,28 +2,19 @@ package com.joao.controle_financeiro.model;
 
 import jakarta.persistence.*;
 
-//Criando a Tabela
 @Entity
 @Table(name = "usuarios")
-
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
 
-    @Column(unique = true, nullable = false)
+    private String nome;
     private String email;
     private String senha;
 
-    //Construtores
-    public Usuario(Long id, String nome, String email, String senha) {
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-    }
-    //Getter and Setter
+    // Getters e Setters
     public Long getId() {
         return id;
     }
