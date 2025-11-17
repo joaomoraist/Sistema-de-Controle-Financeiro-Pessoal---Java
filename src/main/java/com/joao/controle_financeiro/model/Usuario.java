@@ -3,7 +3,11 @@ package com.joao.controle_financeiro.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "usuarios")
+@Table(
+        name = "usuarios",
+        uniqueConstraints = {@UniqueConstraint(columnNames = "email")}// garante email único na tabela)
+)
+
 public class Usuario {
 
     @Id
