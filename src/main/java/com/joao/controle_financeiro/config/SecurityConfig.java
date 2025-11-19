@@ -64,8 +64,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/api-docs/**",
-                                "/auth/login"     // liberar login
-                        ).permitAll() // permite acesso sem login
+                                "/auth/login",     // Liberar login
+                                "/auth/register" // Liberar registro
+                                ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .anyRequest().authenticated() // exige login pro resto
                 )
