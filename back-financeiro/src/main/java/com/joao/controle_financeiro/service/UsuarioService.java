@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UsuarioService {
 
@@ -15,54 +17,53 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // LISTAR
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
+    }
+
+    // CADASTRAR
     public Usuario register(UsuarioRequestDTO dto) {
 
-        // Verifica se o email já existe
         if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new RuntimeException("E-mail já cadastrado");
         }
 
-        // Converte DTO -> Entidade
         Usuario usuario = modelMapper.map(dto, Usuario.class);
-
-        // Criptografa a senha
         usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
 
-        // Salva no banco
         return usuarioRepository.save(usuario);
     }
 
+    // ATUALIZAR
     public Usuario atualizar(Long id, UsuarioRequestDTO dto) {
 
         Usuario existente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // Se email mudou, validar duplicidade
         if (!existente.getEmail().equals(dto.getEmail()) &&
                 usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("Email já está em uso");
+            throw new RuntimeException("E-mail já está em uso");
         }
 
         existente.setNome(dto.getNome());
         existente.setEmail(dto.getEmail());
-
-        // Se o cara enviou senha nova → criptografa e salva
-        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
-            existente.setSenha(passwordEncoder.encode(dto.getSenha()));
-        }
+        existente.setSenha(passwordEncoder.encode(dto.getSenha()));
 
         return usuarioRepository.save(existente);
     }
 
+    // DELETAR
     public void deletar(Long id) {
         if (!usuarioRepository.existsById(id)) {
             throw new RuntimeException("Usuário não encontrado");
         }
+
         usuarioRepository.deleteById(id);
     }
 }
