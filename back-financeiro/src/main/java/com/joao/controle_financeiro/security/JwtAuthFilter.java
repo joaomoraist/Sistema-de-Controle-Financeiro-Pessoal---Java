@@ -11,6 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -25,6 +26,32 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+
+        String path = request.getRequestURI();
+
+        // Ignora endpoints que não precisam de token
+        List<String> publicPaths = List.of(
+                "/auth/login",
+                "/auth/register",
+                "/swagger-ui/",
+                "/swagger-ui",
+                "/swagger-ui/index.html",
+                "/swagger-ui/resources",
+                "/swagger-ui/resources/",
+                "/swagger-ui/**",
+                "/v3/api-docs",
+                "/v3/api-docs/**"
+        );
+
+        // Permite todas as rotas que começam com estes caminhos
+        for (String pub : publicPaths) {
+            if (path.startsWith(pub)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
 
         String header = request.getHeader("Authorization");
         String token = null;

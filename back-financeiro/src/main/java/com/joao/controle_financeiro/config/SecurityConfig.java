@@ -60,13 +60,15 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/swagger-ui.html",
+                                "/auth/login",
+                                "/auth/register",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
                                 "/api-docs/**",
-                                "/auth/login",     // Liberar login
-                                "/auth/register" // Liberar registro
-                                ).permitAll()
+                                "/error"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .anyRequest().authenticated() // exige login pro resto
                 )

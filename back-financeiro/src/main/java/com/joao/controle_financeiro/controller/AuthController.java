@@ -40,7 +40,10 @@ public class AuthController {
         }
 
         // mapeia DTO
-        Usuario usuario = modelMapper.map(dto, Usuario.class);
+        Usuario usuario = new Usuario();
+        usuario.setNome(dto.getNome());
+        usuario.setEmail(dto.getEmail());
+        usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
         // codifica senha
         usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
         Usuario saved = usuarioRepository.save(usuario);
